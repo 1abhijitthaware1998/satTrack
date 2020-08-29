@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="IPL visualization">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+    </script>
+    <style>
+        #sat {
+            height: 200px;
+        }
+    </style>
+    <title>Satellite Tracking</title>
+</head>
+
+<body>
+    <h1>Where is the Satellite ?</h1>
+    <p> latitude: <span id="lat"></span><br/>
+        longitude: <span id="lon"></span>
+    </p>
+    <div id="sat"></div>
+    <script>
+        const mySatMap = L.map('sat').setView([0,0], 1);
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+        const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tiles = L.tileLayer(tileURL, {attribution})
+        tiles.addTo(mySatMap);
+        const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+        async function getSatLocation(){
+            const response = await fetch(api_url)
+            const data = await response.json()
+            const {latitude, longitude} = data
+            document.getElementById('lat').textContent = latitude
+            document.getElementById('lon').textContent = longitude
+        }
+        getSatLocation()
+        setInterval(getSatLocation,500);
+    </script>
+    
+</body>
+</html>
