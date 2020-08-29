@@ -28,21 +28,34 @@
     </p>
     <div id="sat"></div>
     <script>
+        // Create Map and tiles
         const mySatMap = L.map('sat').setView([0,0], 1);
         const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
         const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        const tiles = L.tileLayer(tileURL, {attribution})
+        const tiles = L.tileLayer(tileURL, {attribution});
         tiles.addTo(mySatMap);
+        
+        // Set custom icon as marker
+        /*const mySatIcon = L.icon({
+            iconUrl: 'satTrackimg.png',
+            iconSize: [50, 29],
+            iconAnchor: [25, 16]
+        });*/
+        const marker = L.marker([0,0]).addTo(mySatMap);
+        //const marker = L.marker([0,0],{icon: mySatIcon}).addTo(mySatMap);
+        
         const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+
         async function getSatLocation(){
             const response = await fetch(api_url)
             const data = await response.json()
-            const {latitude, longitude} = data
-            document.getElementById('lat').textContent = latitude
-            document.getElementById('lon').textContent = longitude
+            const {latitude, longitude} = data;
+            marker.setLatLng([latitude, longitude]);
+            document.getElementById('lat').textContent = latitude;
+            document.getElementById('lon').textContent = longitude;
         }
-        getSatLocation()
-        setInterval(getSatLocation,500);
+        getSatLocation();
+        setInterval(getSatLocation,100);
     </script>
     
 </body>
